@@ -1,61 +1,46 @@
 #include "../incl/main.h"
-#include "../incl/problem.h"
-#include <assert.h>
 
 int main(void)
 {
-    int* case1AccountPointers[case1AccountsSize];
-    int* case2AccountPointers[case2AccountsSize];
-    int* case3AccountPointers[case3AccountsSize];
+    initList(&case1Head, case1NodeValues, case1NodeValuesLength);
+    initList(&case2Head, case2NodeValues, case2NodeValuesLength);
 
-    // double dereferenced pointers: https://stackoverflow.com/questions/42118190/dereferencing-a-double-pointer
-    for (int i = 0; i < case1AccountsSize; i++)
-    {   //copy the addresses of each row in the account array `case1InputNums` to case1AccountPointers to make them double derefenced, as `maximumWealth` expects
-        case1AccountPointers[i] = case1InputNums[i];
+    // // Declaration of a function pointer 
+    // struct ListNode* (*funcPtr)(struct ListNode*); 
+    // // Assign the middleNode function to the function pointer 
+    // funcPtr = middleNode;
+
+    printf("------------------------");
+    printf("Running %d Tests...", NUM_TEST_CASES);
+    printf("------------------------\n");
+
+    runningReturn += testCaseN(case1Head, case1Solution);
+    runningReturn += testCaseN(case2Head, case2Solution);
+    // runningReturn += testCaseN(middleNode, case1Head, case1Solution);
+    // runningReturn += testCaseN(middleNode, case2Head, case2Solution);
+
+    printf("------------------------");
+    printf("%ld / %d tests passed!", runningReturn - NUM_TEST_CASES, NUM_TEST_CASES);
+    printf("------------------------\n");
+
+    return runningReturn;
+}
+
+// return 0 if the test case passes, 1 if it fails; the reason for this design is that we call `testCaseN` NUM_TEST_CASES times
+int testCaseN(struct ListNode *head, int solution)
+{
+    struct ListNode *proposedMiddleNode = NULL;
+    proposedMiddleNode = middleNode(head);
+
+    printf("Test case %ld ", ++currentTestCase);
+    if(proposedMiddleNode != NULL && proposedMiddleNode->val == solution)
+    {
+        printf("passed!\n");
+        return 0;
     }
-
-    for (int i = 0; i < case2AccountsSize; i++)
-    {   //copy the addresses of each row in the account array `case1InputNums` to case1AccountPointers to make them double derefenced, as `maximumWealth` expects
-        case2AccountPointers[i] = case2InputNums[i];
+    else
+    {
+        printf("FAILED!\n");
+        return 1;
     }
-
-    for (int i = 0; i < case3AccountsSize; i++)
-    {   //copy the addresses of each row in the account array `case1InputNums` to case1AccountPointers to make them double derefenced, as `maximumWealth` expects
-        case3AccountPointers[i] = case3InputNums[i];
-    }
-
-    printf("TEST CASE %ld ", ++currentTestCase);
-    assert(
-            maximumWealth(
-                case1AccountPointers,
-                case1AccountsSize,
-                (int*) case1AccountsColSize
-            )
-            == case1OutputNums
-    );
-    printf("PASSED!\n");
-
-    printf("TEST CASE %ld ", ++currentTestCase);
-    assert(
-            maximumWealth(
-                case2AccountPointers,
-                case2AccountsSize,
-                (int*) case2AccountsColSize
-            )
-            == case2OutputNums
-    );
-    printf("PASSED!\n");
-
-    printf("TEST CASE %ld ", ++currentTestCase);
-    assert(
-            maximumWealth(
-                case3AccountPointers,
-                case3AccountsSize,
-                (int*) case3AccountsColSize
-            )
-            == case3OutputNums
-    );
-    printf("PASSED!\n");
-
-    return 0;
 }
